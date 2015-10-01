@@ -9,7 +9,7 @@ source muzube.conf
 #set mac if it isn't already
 if [ -z "$MacAdress" ]
 then
-	MacAdress=$(echo $FQDN|md5sum|sed 's/^\(..\)\(..\)\(..\)\(..\)\(..\).*$/02:\1:\2:\3:\4:\5/')
+	MacAdress=$(echo $FQDN|md5sum|sed 's/^\(..\)\(..\)\(..\)\(..\)\(..\).*$/02:\1:\2:\3:\4:\5/'|tr '[:lower:]' '[:upper:]')
 	sed -i -e "s/MacAdress=/MacAdress=$MacAdress/" muzube.conf
 fi
 
