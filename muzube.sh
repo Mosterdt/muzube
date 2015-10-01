@@ -6,6 +6,13 @@ source muzube-env/bin/activate
 #get date from file
 source muzube.conf
 
+#set mac if it isn't already
+if [ -z "$MacAdress" ]
+then
+	MacAdress=$(echo $FQDN|md5sum|sed 's/^\(..\)\(..\)\(..\)\(..\)\(..\).*$/02:\1:\2:\3:\4:\5/')
+	sed -i -e "s/MacAdress=/MacAdress=$MacAdress/" muzube.conf
+fi
+
 #make folder if not exists
 mkdir -p songs
 #go into folder
@@ -26,19 +33,19 @@ do
 		ARTIST=$(echo $i | sed 's/\(.*\) - .*\.mp3/\1/')
 		SONG=$(  echo $i | sed 's/.* - \(.*\)\.mp3/\1/')
 		ALBUM=$Album
-		id3tag --artist=$ARTIST --album=$ALBUM --song=$SONG "$i"
+		id3v2 --artist=$ARTIST --album=$ALBUM --song=$SONG "$i"
 	fi
 done
 
 #return a folder
 cd ..
 #upload songs to google music
-./gmusicapi-scripts/gmupload.py -m songs/*
+./gmusicapi-scripts/gmupload.py --uploader-id $MacAdress --match songs/*
 
 #remove uploaded songs
 rm songs/*
 
 #update date
-sed -i.bak -e "s/LastDownloaded=.*/LastDownloaded=$(date +%Y%m%d)/" muzube.conf
+sed -i -e "s/LastDownloaded=.*/LastDownloaded=$(date +%Y%m%d)/" muzube.conf
 
 deactivate
