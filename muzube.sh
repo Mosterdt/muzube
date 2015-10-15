@@ -32,8 +32,8 @@ do
 	then
 		ARTIST=$(echo $i | sed 's/\(.*\) - .*\.mp3/\1/')
 		SONG=$(  echo $i | sed 's/.* - \(.*\)\.mp3/\1/')
-		ALBUM=$Album
-		id3v2 --artist=$ARTIST --album=$ALBUM --song=$SONG "$i"
+		ALBUM="$Album"
+		id3v2 --artist="$ARTIST" --album="$ALBUM" --song="$SONG" "$i"
 	fi
 done
 
