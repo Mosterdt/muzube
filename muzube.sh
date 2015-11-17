@@ -20,8 +20,8 @@ cd songs
 
 #download all the songs!
 echo Downloading songs
-youtube-dl --dateafter $LastDownloaded --playlist-end 10 \
-	--extract-audio --audio-format $Format \
+youtube-dl --dateafter $LastDownloaded --playlist-end $SongLimit \
+	--max-filesize 50m --extract-audio --audio-format $Format \
 	--output "%(title)s.%(ext)s" $Playlist
 
 #give all the songs the right tags
@@ -33,10 +33,10 @@ do
 		ARTIST=$(echo $i | sed 's/\(.*\) - .*\.mp3/\1/')
 		SONG=$(  echo $i | sed 's/.* - \(.*\)\.mp3/\1/')
 		ALBUM=$Album
-		id3v2 --artist=$ARTIST --album=$ALBUM --song=$SONG "$i"
+		id3v2 --artist="$ARTIST" --album="$ALBUM" --song="$SONG" "$i"
 	fi
 done
-
+echo end tagging
 #return a folder
 cd ..
 #upload songs to google music
